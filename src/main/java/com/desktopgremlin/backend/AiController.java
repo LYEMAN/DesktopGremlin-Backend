@@ -3,8 +3,7 @@ package com.desktopgremlin.backend;
 import com.desktopgremlin.backend.models.ChatRequest;
 import com.desktopgremlin.backend.models.ChatResponse;
 import com.desktopgremlin.backend.services.AiService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.desktopgremlin.backend.services.InputParser;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,15 +11,27 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class AiController {
 
-    @Autowired
-    private AiService aiService;
+    private final AiService aiService;
+    private final InputParser inputParser;
+
+    public AiController(AiService aiService, InputParser inputParser) {
+        this.aiService = aiService;
+        this.inputParser = inputParser;
+    }
 
     @PostMapping("/chat")
     public ChatResponse chat(@RequestBody ChatRequest request) {
+        var parsed = inputParser.parse(request.getMessage());
 
-        String aiReply =
-                aiService.generateResponse(request.getMessage());
+        // Enrich the prompt with detected context
+        String enrichedPrompt = String.format(
+            "[User mood: %s] [Topic: %s] %s",
+            parsed.mood(),
+            parsed.topic(),
+            parsed.originalMessage()
+        );
 
-        return new ChatResponse(aiReply);
+        String reply = aiService.generateResponse(enrichedPrompt);
+        return new ChatResponse(reply);
     }
 }
