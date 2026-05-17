@@ -26,12 +26,18 @@ public class AiService {
         headers.setBearerAuth(groqApiKey);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("model", "llama-3.1-8b-instant");
+        body.put("model", "llama-3.1-8b-instant"); 
+
+        Map<String, String> systemMsg = new HashMap<>();
+
+        systemMsg.put("role", "system");
+        systemMsg.put("content", PromptLoader.loadPrompt("/docs/json_formatting.txt"));
 
         List<Map<String, String>> messages = new ArrayList<>();
         Map<String, String> userMsg = new HashMap<>();
         userMsg.put("role", "user");
-        userMsg.put("content", userMessage);
+        userMsg.put("content", userMessage); 
+        messages.add(systemMsg);
         messages.add(userMsg);
 
         body.put("messages", messages);

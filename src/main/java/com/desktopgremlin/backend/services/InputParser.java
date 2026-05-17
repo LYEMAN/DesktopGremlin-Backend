@@ -7,7 +7,7 @@ public class InputParser {
 
     public ParsedMessage parse(String raw) {
         if (raw == null || raw.isBlank()) {
-            return new ParsedMessage("neutral", "general", raw);
+            return new ParsedMessage("neutral", raw);
         }
 
         String lower = raw.toLowerCase();
@@ -24,18 +24,18 @@ public class InputParser {
             mood = "neutral";
 
         // Topic detection
-        String topic;
-        if (lower.contains("weather") || lower.contains("temperature") || lower.contains("rain"))
-            topic = "weather";
-        else if (lower.contains("joke") || lower.contains("funny") || lower.contains("laugh"))
-            topic = "humor";
-        else if (lower.contains("math") || lower.contains("calculate") || lower.contains("solve"))
-            topic = "math";
-        else
-            topic = "general";
+        /*   String topic;
+            if (lower.contains("weather") || lower.contains("temperature") || lower.contains("rain"))
+                topic = "weather";
+            else if (lower.contains("joke") || lower.contains("funny") || lower.contains("laugh"))
+                topic = "humor";
+            else if (lower.contains("math") || lower.contains("calculate") || lower.contains("solve"))
+                topic = "math";
+            else
+                topic = "general"; */
 
-        return new ParsedMessage(mood, topic, raw);
+        return new ParsedMessage(mood, raw);
     }
 
-    public record ParsedMessage(String mood, String topic, String originalMessage) {}
+    public record ParsedMessage(String mood, String originalMessage) {}
 }

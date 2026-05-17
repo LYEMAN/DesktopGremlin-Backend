@@ -1,10 +1,15 @@
 package com.desktopgremlin.backend;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.desktopgremlin.backend.models.ChatRequest;
 import com.desktopgremlin.backend.models.ChatResponse;
 import com.desktopgremlin.backend.services.AiService;
 import com.desktopgremlin.backend.services.InputParser;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ai")
@@ -20,18 +25,24 @@ public class AiController {
     }
 
     @PostMapping("/chat")
-    public ChatResponse chat(@RequestBody ChatRequest request) {
-        var parsed = inputParser.parse(request.getMessage());
+    public ChatResponse chat(@RequestBody ChatRequest request) { 
+        
+    System.out.println("AI endpoint hit");
 
-        // Enrich the prompt with detected context
+    String message = request.getMessage();
+
+    System.out.println("Message: " + message);
+
+   
+        String prompt = request.getMessage(); 
+       /*  // Enrich the prompt with detected context
         String enrichedPrompt = String.format(
-            "[User mood: %s] [Topic: %s] %s",
+            "[User mood: %s] %s",
             parsed.mood(),
-            parsed.topic(),
             parsed.originalMessage()
-        );
+        ); */
 
-        String reply = aiService.generateResponse(enrichedPrompt);
+        String reply = aiService.generateResponse(prompt);
         return new ChatResponse(reply);
     }
 }
